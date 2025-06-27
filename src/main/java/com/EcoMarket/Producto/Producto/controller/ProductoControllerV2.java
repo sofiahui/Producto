@@ -1,7 +1,6 @@
 package com.EcoMarket.Producto.Producto.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +26,8 @@ import com.EcoMarket.Producto.Producto.service.ProductoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("api/v2/productos")
-@Tag(name="Productos",description="Operaciones relacionadas con los Productos")
+@RequestMapping("/api/v2/productos")
+@Tag(name="Productos",description="Operaciones relacionadas con los Productos Ecomarket Grupo 7")
 
 public class ProductoControllerV2 {
 
@@ -47,9 +46,9 @@ public class ProductoControllerV2 {
         return CollectionModel.of(productos,linkTo(methodOn(ProductoControllerV2.class).getAllProductos()).withSelfRel());
     }
 
-    @GetMapping(value = "/{sku}", produces = MediaTypes.HAL_JSON_VALUE)
-    public EntityModel<Producto> getProductoBySku(@PathVariable Integer sku) {
-        Producto producto = productoService.findById(sku);
+    @GetMapping(value = "/{codigo}", produces = MediaTypes.HAL_JSON_VALUE)
+    public EntityModel<Producto> getProductoByCodigo(@PathVariable Integer codigo) {
+        Producto producto = productoService.findById(codigo);
         return assembler.toModel(producto);
     }
 
@@ -57,22 +56,22 @@ public class ProductoControllerV2 {
     public ResponseEntity<EntityModel<Producto>> createProducto(@RequestBody Producto producto) {
         Producto newProducto = productoService.save(producto);
         return ResponseEntity
-                .created(linkTo(methodOn(ProductoControllerV2.class).getProductoBySku(newProducto.getSku())).toUri())
+                .created(linkTo(methodOn(ProductoControllerV2.class).getProductoByCodigo(newProducto.getSku())).toUri())
                 .body(assembler.toModel(newProducto));
     }
 
-    @PutMapping(value = "/{sku}", produces = MediaTypes.HAL_JSON_VALUE)
-    public ResponseEntity<EntityModel<Producto>> updateProducto(@PathVariable Integer sku, @RequestBody Producto producto) {
-      producto.setSku(sku);
-     Producto updatedProducto = productoService.save(producto);
-    return ResponseEntity.ok(assembler.toModel(updatedProducto));
-}
-
-    @DeleteMapping(value = "/{sku}", produces = MediaTypes.HAL_JSON_VALUE)
-    public ResponseEntity<?> deleteProducto(@PathVariable Integer sku) {
-    productoService.deleteBySku(sku);
-    return ResponseEntity.noContent().build();
+    @PutMapping(value = "/{codigo}", produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity<EntityModel<Producto>> updateProducto(@PathVariable Integer codigo, @RequestBody Producto producto) {
+        producto.setSku(codigo);
+        Producto updatedProducto = productoService.save(producto);
+        return ResponseEntity
+                .ok(assembler.toModel(updatedProducto));
     }
 
+    @DeleteMapping(value = "/{codigo}", produces = MediaTypes.HAL_JSON_VALUE)
+    public ResponseEntity<?> deleteProducto(@PathVariable Integer codigo) {
+        productoService.delete(codigo);
+        return ResponseEntity.noContent().build();
+    }
 
 }
