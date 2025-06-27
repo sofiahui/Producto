@@ -14,7 +14,7 @@ public class Swagger {
 
     @Bean
     public OpenAPI customAPI(){
-        return new OpenAPI().info(new Info().title("API 2025 Productos").version("1.0").description("Documentacion de la API para el sistema de Productos"));
+        return new OpenAPI().info(new Info().title("API 2025 Productos").version("2.0").description("Documentacion de la API para el sistema de Productos"));
     }
 
 }
